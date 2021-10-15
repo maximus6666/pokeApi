@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/pokeApi/static/css/main.5c1c4dd1.chunk.css",
+    "main.js": "/pokeApi/static/js/main.1231c8c6.chunk.js",
+    "main.js.map": "/pokeApi/static/js/main.1231c8c6.chunk.js.map",
+    "runtime-main.js": "/pokeApi/static/js/runtime-main.4b606ba0.js",
+    "runtime-main.js.map": "/pokeApi/static/js/runtime-main.4b606ba0.js.map",
+    "static/js/2.9d79018e.chunk.js": "/pokeApi/static/js/2.9d79018e.chunk.js",
+    "static/js/2.9d79018e.chunk.js.map": "/pokeApi/static/js/2.9d79018e.chunk.js.map",
+    "static/js/3.e8f09533.chunk.js": "/pokeApi/static/js/3.e8f09533.chunk.js",
+    "static/js/3.e8f09533.chunk.js.map": "/pokeApi/static/js/3.e8f09533.chunk.js.map",
+    "index.html": "/pokeApi/index.html",
+    "static/css/main.5c1c4dd1.chunk.css.map": "/pokeApi/static/css/main.5c1c4dd1.chunk.css.map",
+    "static/js/2.9d79018e.chunk.js.LICENSE.txt": "/pokeApi/static/js/2.9d79018e.chunk.js.LICENSE.txt",
+    "static/media/spinner-1.4c0dabf6.gif": "/pokeApi/static/media/spinner-1.4c0dabf6.gif"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.4b606ba0.js",
+    "static/js/2.9d79018e.chunk.js",
+    "static/css/main.5c1c4dd1.chunk.css",
+    "static/js/main.1231c8c6.chunk.js"
+  ]
+}
