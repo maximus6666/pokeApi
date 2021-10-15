@@ -9,14 +9,14 @@ import { PokemonDetailsPage } from './components/PokemonDetailsPage';
 
 function App() {
   const [pokemonDataCurrentList, setPokemonDataCurrentList] = useState([]);
-  const [select, setSelect] = useState('All');
+  const [filtredBy, setFiltredBy] = useState('All');
 
   const [isFetching, setIsFetching] = useState(false);
   const [nextPage, setNextPage] = useState('');
-  const [pokemonId, setPocemonId] = useState(null);
+  const [pokemonId, setPokemonId] = useState(null);
 
   async function fetchAndCathError(link) {
-    try{
+    try {
       setIsFetching(true);
       const res = await fetch(link);
       const data = await res.json();
@@ -32,58 +32,59 @@ function App() {
     }
   }
 
-  const handleLoadMore = () => {
+  const handleLoadMore = async () => {
     if (nextPage) {
-      fetchAndCathError(nextPage)
-      .then((res) => {
-        const links = res?.results.map(el => el.url);
-        
-        const promises = links.map((link) => {
-          return fetchAndCathError(link)
-        });
-        Promise.all(promises)
-          .then((data) => setPokemonDataCurrentList([...pokemonDataCurrentList, ...data]));
-          setNextPage(res.next);
-      })
+     const response = await fetchAndCathError(nextPage);
+     const links = await response?.results.map((el) => el.url);
+     const promises = links.map(async (link) => {
+      return await fetchAndCathError(link);
+    });
+    const data = await Promise.all(promises);
+
+    setPokemonDataCurrentList([...pokemonDataCurrentList, ...data]);
+    setNextPage(response.next);
+
     }else {
       alert("It's all pokemons");
     }
-  }
+  };
 
   const handleSelect = (value) => {
-    setSelect(value)
-  }
+    setFiltredBy(value);
+  };
 
-  const getFiltredPokemonList = (select) => {
-    if (select === 'All') {
+  const getFiltredPokemonList = (filtredBy) => {
+    if (filtredBy === 'All') {
 
-      return pokemonDataCurrentList
+      return pokemonDataCurrentList;
     }
-    let pocemonFiltredList = pokemonDataCurrentList;
-    pocemonFiltredList = pocemonFiltredList.filter((el) => {
+    let pokemonFiltredList = pokemonDataCurrentList;
+    pokemonFiltredList = pokemonFiltredList.filter((el) => {
      return el.types.some((el) => {
-       return el.type.name === select
-      })
-    })
+       return el.type.name === filtredBy;
+      });
+    });
 
-    return pocemonFiltredList;
-  } 
+    return pokemonFiltredList;
+  };
 
   useEffect(() => {
-    const getPokemonsUrl = (arr) => {
-      const data = arr?.map((item) => {
-        return fetchAndCathError(item.url)
-      })
-      return data;
+    async function fetchData() {
+      const getPokemonsUrl = (arr) => {
+        const data = arr?.map((item) => {
+          return fetchAndCathError(item.url);
+        });
+        return data;
+      };
+      const response = await fetchAndCathError('https://pokeapi.co/api/v2/pokemon/?limit=12');
+      setNextPage(response.next);
+      const list = await Promise.all(getPokemonsUrl(response?.results));
+      setPokemonDataCurrentList((list));
     }
 
-    fetchAndCathError('https://pokeapi.co/api/v2/pokemon/?limit=12')
-      .then((res) => {
-        setNextPage(res.next);
-      Promise.all(getPokemonsUrl(res?.results))
-        .then((res) => setPokemonDataCurrentList((res)));
-      })
-  },[])
+    fetchData();
+    
+  },[]);
   
   return (
     <Box className="App">
@@ -99,9 +100,9 @@ function App() {
           <FilterSelect pokemonList={pokemonDataCurrentList} handleSelect={handleSelect}/>
           <Box justify='center' direction='row' wrap={true}>
             {
-              getFiltredPokemonList(select).map((pokemon) => 
+              getFiltredPokemonList(filtredBy).map((pokemon) => 
                 <PokemonCard 
-                  setPocemonId = {setPocemonId}
+                  setPokemonId = {setPokemonId}
                   key={pokemon.id} {...pokemon}/>)
             }
           </Box>

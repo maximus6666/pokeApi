@@ -1,5 +1,5 @@
-import { Button } from 'grommet'
-import React from 'react'
+import { Button } from 'grommet';
+import React from 'react';
 
 export const LoadMoreButton = ({handleLoadMore}) => {
   return (
@@ -11,6 +11,6 @@ export const LoadMoreButton = ({handleLoadMore}) => {
       margin='20px 0'
       label='Load more'>
 
-      </Button>
+    </Button>
   )
 }

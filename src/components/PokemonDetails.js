@@ -1,21 +1,20 @@
-import { Box, Heading, Image } from 'grommet'
-import React from 'react'
-import uniqid from 'uniqid'
+import { Box, Heading, Image } from 'grommet';
+import React from 'react';
+import uniqid from 'uniqid';
 
 export const PokemonDetails = (props) => {
   const {name, types, sprites: other, stats, weight, moves, id} = props;
   const pokemonImg = other?.other.dream_world.front_default;
   const formatString = (str) => str[0].toUpperCase() + str.slice(1);
 
-
   const getPokemonStats = (stats = []) => {
     return stats.reduce((acum, el) => {
     return {
       ...acum,
       [el.stat.name]:el.base_stat,
-    }
-   },{})
-  }
+    };
+   },{});
+  };
 
   const pokemonStats = getPokemonStats(stats);
   const title = formatString(name);

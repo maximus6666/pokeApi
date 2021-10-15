@@ -1,5 +1,5 @@
-import { Box, Paragraph, Select } from 'grommet'
-import React, { useEffect } from 'react'
+import { Box, Paragraph, Select } from 'grommet';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 
 export const FilterSelect = ({handleSelect, pokemonList}) => {
@@ -10,22 +10,22 @@ export const FilterSelect = ({handleSelect, pokemonList}) => {
     const result = [];
     arr.forEach((el) => {
       el.types.forEach((el) => {
-        result.push(el.type.name)
-      })
-    })
+        result.push(el.type.name);
+      });
+    });
   
-    return [...new Set(result)]
-  }
+    return [...new Set(result)];
+  };
 
   useEffect(() => {
     if (pokemonList.length){
-      const list = createSelectOptions(pokemonList)
+      const list = createSelectOptions(pokemonList);
       setOptions(['All', ...list]);
     }
     
-  },[pokemonList])
+  },[pokemonList]);
   return (
-    <Box direction='row' alignSelf='center'>
+    <Box direction='row' wrap={true} justify='center' alignSelf='center'>
       <Paragraph >Filter by type</Paragraph>
       <Select
         margin={{left:'10px'}}

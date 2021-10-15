@@ -1,16 +1,16 @@
-import { Box, Heading, Image } from 'grommet'
-import uniqid from 'uniqid'
-import React from 'react'
+import { Box, Heading, Image } from 'grommet';
+import uniqid from 'uniqid';
+import React from 'react';
 
 export const PokemonCard = (props) => {
-  const {name, types, sprites: other, id, setPocemonId} = props;
+  const {name, types, sprites: other, id, setPokemonId} = props;
   const pokemonImg = other.other.dream_world.front_default;
   const formatString = (str) => str[0].toUpperCase() + str.slice(1);
   
   const title = formatString(name);
   return (
     <Box 
-      onClick={()=> setPocemonId(id)}
+      onClick={()=> setPokemonId(id)}
       className='pokemon-card'
       width='250px'
       margin='5px 2px'

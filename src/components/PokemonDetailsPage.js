@@ -27,10 +27,13 @@ export const PokemonDetailsPage = ({pokemonId}) => {
   }
 
   useEffect(() => {
-    if (pokemonId) {
-      fetchAndCathError(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
-      .then((res) => setPokemonDetails(res));
+    async function fetchData() {
+      if (pokemonId) {
+       const data = await fetchAndCathError(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
+        setPokemonDetails(data);
+      }
     }
+    fetchData();
     
   },[pokemonId])
 
