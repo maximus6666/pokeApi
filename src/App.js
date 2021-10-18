@@ -12,7 +12,7 @@ function App() {
 
   const [isFetching, setIsFetching] = useState(false);
   const [nextPage, setNextPage] = useState('');
-  const [selectedPokemon, setSelectedpokemon] = useState();
+  const [selectedPokemon, setSelectedPokemon] = useState();
 
   async function makeRequest(link) {
     try {
@@ -52,32 +52,22 @@ function App() {
 
       return pokemonList;
     }
-    let pokemonFilteredList = pokemonList.filter((el) => el.types.some((el) => el.type.name === filteredBy))
+    const pokemonFilteredList = pokemonList.filter((el) => el.types.some((el) => el.type.name === filteredBy));
   
     return pokemonFilteredList;
   };
 
-  const createSelectOptions = (arr) => {
-    const result = [];
-    arr.forEach((el) => {
-      el.types.forEach((el) => {
-        result.push(el.type.name);
-      });
-    });
-  
-    return [...new Set(result)];
-  };
+    const allOptions = pokemonList.reduce((accum, pokemon) => {
+      const pokemonTypeNames = pokemon.types.map(el => el.type.name);
+      return [...accum, ...pokemonTypeNames]
+    },[]);
 
-  const optionsList = ['All', ...createSelectOptions(pokemonList)];
+  const optionsList = ['All', ...new Set(allOptions)];
 
   useEffect(() => {
     async function fetchData() {
-      const getPokemonsUrl = (arr) => {
-        const data = arr?.map((item) => {
-          return makeRequest(item.url);
-        });
-        return data;
-      };
+      const getPokemonsUrl = (arr) => arr?.map((item) => makeRequest(item.url));
+      
       const response = await makeRequest('https://pokeapi.co/api/v2/pokemon/?limit=12');
       setNextPage(response.next);
       const list = await Promise.all(getPokemonsUrl(response?.results));
@@ -98,12 +88,16 @@ function App() {
       </Header>
       <Main direction="row">
         <Box className="pokemons-container">
-          <FilterSelect optionsList={optionsList} onSelect={setFilteredBy}/>
+          <FilterSelect 
+            optionsList={optionsList} 
+            onSelect={setFilteredBy}
+            value={filteredBy}
+          />
           <Box justify="center" direction="row" wrap={true}>
             {
               getFilteredPokemonList(filteredBy).map((pokemon) => 
                 <PokemonCard 
-                  onClick = {setSelectedpokemon}
+                  onClick = {setSelectedPokemon}
                   key={pokemon.id} {...pokemon}/>)
             }
           </Box>

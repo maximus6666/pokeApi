@@ -1,6 +1,6 @@
 import { Box, Heading, Image } from 'grommet';
 import React from 'react';
-import { formatString } from '../helpers';
+import { formatString } from '../helpers/formatString';
 
 export const PokemonDetails = (props) => {
   const {name, types, sprites: other, stats, weight, moves, id} = props;

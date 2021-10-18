@@ -1,15 +1,15 @@
 import { Box, Heading, Image } from 'grommet';
-import { formatString } from '../helpers';
+import { formatString } from '../helpers/formatString';
 import React from 'react';
 
 export const PokemonCard = (props) => {
-  const {name, types, sprites, onClick: setSelectedpokemon } = props;
+  const {name, types, sprites, onClick: setSelectedPokemon } = props;
   const pokemonImg = sprites.other.dream_world.front_default;
   const title = formatString(name);
   return (
     <Box 
       onClick={() => {
-        setSelectedpokemon(props)
+        setSelectedPokemon(props)
       }}
       className='pokemon-card'
       width='250px'
