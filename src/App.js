@@ -1,21 +1,20 @@
-import { Box, Header, Heading, Main } from 'grommet';
+import { Box, Button, Header, Heading, Main } from 'grommet';
 import { useEffect, useState } from 'react';
 import './App.css';
 import { FilterSelect } from './components/FilterSelect';
 import { Loader } from './components/Loader';
-import { LoadMoreButton } from './components/LoadMoreButton';
 import { PokemonCard } from './components/PokemonCard';
-import { PokemonDetailsPage } from './components/PokemonDetailsPage';
+import { PokemonDetails } from './components/PokemonDetails';
 
 function App() {
-  const [pokemonDataCurrentList, setPokemonDataCurrentList] = useState([]);
-  const [filtredBy, setFiltredBy] = useState('All');
+  const [pokemonList, setPokemonList] = useState([]);
+  const [filteredBy, setFilteredBy] = useState('All');
 
   const [isFetching, setIsFetching] = useState(false);
   const [nextPage, setNextPage] = useState('');
-  const [pokemonId, setPokemonId] = useState(null);
+  const [selectedPokemon, setSelectedpokemon] = useState();
 
-  async function fetchAndCathError(link) {
+  async function makeRequest(link) {
     try {
       setIsFetching(true);
       const res = await fetch(link);
@@ -32,85 +31,96 @@ function App() {
     }
   }
 
-  const handleLoadMore = async () => {
-    if (nextPage) {
-     const response = await fetchAndCathError(nextPage);
-     const links = await response?.results.map((el) => el.url);
-     const promises = links.map(async (link) => {
-      return await fetchAndCathError(link);
-    });
+  const loadMore = async () => {
+    if (!nextPage) {
+      alert("It's all pokemons");
+
+      return
+    }
+
+    const response = await makeRequest(nextPage);
+    const links = await response?.results.map((el) => el.url);
+    const promises = links.map(makeRequest);
     const data = await Promise.all(promises);
 
-    setPokemonDataCurrentList([...pokemonDataCurrentList, ...data]);
+    setPokemonList([...pokemonList, ...data]);
     setNextPage(response.next);
-
-    }else {
-      alert("It's all pokemons");
-    }
   };
 
-  const handleSelect = (value) => {
-    setFiltredBy(value);
+  const getFilteredPokemonList = (filteredBy) => {
+    if (filteredBy === 'All') {
+
+      return pokemonList;
+    }
+    let pokemonFilteredList = pokemonList.filter((el) => el.types.some((el) => el.type.name === filteredBy))
+  
+    return pokemonFilteredList;
   };
 
-  const getFiltredPokemonList = (filtredBy) => {
-    if (filtredBy === 'All') {
-
-      return pokemonDataCurrentList;
-    }
-    let pokemonFiltredList = pokemonDataCurrentList;
-    pokemonFiltredList = pokemonFiltredList.filter((el) => {
-     return el.types.some((el) => {
-       return el.type.name === filtredBy;
+  const createSelectOptions = (arr) => {
+    const result = [];
+    arr.forEach((el) => {
+      el.types.forEach((el) => {
+        result.push(el.type.name);
       });
     });
-
-    return pokemonFiltredList;
+  
+    return [...new Set(result)];
   };
+
+  const optionsList = ['All', ...createSelectOptions(pokemonList)];
 
   useEffect(() => {
     async function fetchData() {
       const getPokemonsUrl = (arr) => {
         const data = arr?.map((item) => {
-          return fetchAndCathError(item.url);
+          return makeRequest(item.url);
         });
         return data;
       };
-      const response = await fetchAndCathError('https://pokeapi.co/api/v2/pokemon/?limit=12');
+      const response = await makeRequest('https://pokeapi.co/api/v2/pokemon/?limit=12');
       setNextPage(response.next);
       const list = await Promise.all(getPokemonsUrl(response?.results));
-      setPokemonDataCurrentList((list));
+      setPokemonList(list);
     }
 
     fetchData();
-    
   },[]);
   
   return (
     <Box className="App">
       <Header 
-        width='100%'
-        background='brand'
-        justify='center' 
+        width="100%"
+        background="brand"
+        justify="center" 
         className="App-header">
         <Heading>Pokedex</Heading>
       </Header>
-      <Main direction='row'>
-        <Box className='pokemons-container'>
-          <FilterSelect pokemonList={pokemonDataCurrentList} handleSelect={handleSelect}/>
-          <Box justify='center' direction='row' wrap={true}>
+      <Main direction="row">
+        <Box className="pokemons-container">
+          <FilterSelect optionsList={optionsList} onSelect={setFilteredBy}/>
+          <Box justify="center" direction="row" wrap={true}>
             {
-              getFiltredPokemonList(filtredBy).map((pokemon) => 
+              getFilteredPokemonList(filteredBy).map((pokemon) => 
                 <PokemonCard 
-                  setPokemonId = {setPokemonId}
+                  onClick = {setSelectedpokemon}
                   key={pokemon.id} {...pokemon}/>)
             }
           </Box>
             {
-            isFetching ?  <Loader/> : <LoadMoreButton handleLoadMore={handleLoadMore}/>
+            isFetching 
+              ? <Loader/> 
+              : <Button 
+                  onClick={loadMore} 
+                  alignSelf="center" 
+                  primary 
+                  size="medium"
+                  margin="20px 0"
+                  label="Load more">
+                </Button>
             }
         </Box>
-        <PokemonDetailsPage pokemonId={pokemonId}/>
+       { selectedPokemon ? <PokemonDetails {...selectedPokemon}/> : <></> }
       </Main>
     </Box>
   );
