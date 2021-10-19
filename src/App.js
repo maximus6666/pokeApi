@@ -67,8 +67,8 @@ function App() {
   useEffect(() => {
     async function fetchData() {
       const getPokemonsUrl = (arr) => arr?.map((item) => makeRequest(item.url));
-      
-      const response = await makeRequest('https://pokeapi.co/api/v2/pokemon/?limit=12');
+      const POKEMONS_PER_PAGE = 12;
+      const response = await makeRequest(`https://pokeapi.co/api/v2/pokemon/?limit=${POKEMONS_PER_PAGE}`);
       setNextPage(response.next);
       const list = await Promise.all(getPokemonsUrl(response?.results));
       setPokemonList(list);
