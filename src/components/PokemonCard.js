@@ -1,16 +1,16 @@
 import { Box, Heading, Image } from 'grommet';
-import uniqid from 'uniqid';
+import { formatString } from '../helpers/formatString';
 import React from 'react';
 
 export const PokemonCard = (props) => {
-  const {name, types, sprites: other, id, setPokemonId} = props;
-  const pokemonImg = other.other.dream_world.front_default;
-  const formatString = (str) => str[0].toUpperCase() + str.slice(1);
-  
+  const {name, types, sprites, onClick: setSelectedPokemon } = props;
+  const pokemonImg = sprites.other.dream_world.front_default;
   const title = formatString(name);
   return (
     <Box 
-      onClick={()=> setPokemonId(id)}
+      onClick={() => {
+        setSelectedPokemon(props)
+      }}
       className='pokemon-card'
       width='250px'
       margin='5px 2px'
@@ -29,7 +29,7 @@ export const PokemonCard = (props) => {
         <Box direction='row'>
           {types.map((item) => 
             <Box 
-              key={uniqid()}
+              key={item.type.name}
               className={`card-type-box ${item.type.name}`}
             >
               {formatString(item.type.name)}
